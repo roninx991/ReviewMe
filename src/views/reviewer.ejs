@@ -144,11 +144,7 @@
                                 <tbody class="table-hover">
                                     <%for(var i=0;i<sub1.length;i++){%>
                                         <tr>
-                                            <td class="text-left" id="hash">
-                                                <a target="_blank" href="http://localhost:8080/ipfs/<%=sub1[i].h%>">
-                                                    <%=sub1[i].h%>
-                                                </a>
-                                            </td>
+                                            <td class="text-left alpha"><%=sub1[i].h%></td>
                                             <td class="text-left">
                                                 <%=sub1[i].domain%>
                                             </td>
@@ -196,15 +192,11 @@
                                             <td class="text-left" id="accuracy">
                                                 <%= i %>
                                             </td>
-                                            <td class="text-left" id="hash">
-                                                <a target="_blank" href="http://localhost:8080/ipfs/<%=sub2[i].h%>">
-                                                    <%=sub2[i].h%>
-                                                </a>
-                                            </td>
+                                            <td class="text-left alpha"><%=sub2[i].h%></td>
                                             <td class="text-left">
                                                 <%=sub2[i].domain%>
                                             </td>
-                                            <td><a class="btn btn-sm btn-success" data-toggle="modal" data-target="#review-contents" id="yes" onclick="$('#marks').html('<%=sub2[i].reviews%>');$('#comments').html('<%=sub2[i].reviews%>');">Info</a></td>
+                                            <td><a class="btn btn-sm btn-success" data-toggle="collapse" data-target="#review-contents1" id="yes">Info</a></td>
                                         </tr>
                                         <%}%>
 
@@ -269,10 +261,10 @@
                     <h5 class="modal-title" id="exampleModalLabel">Sell SATs</h5>
                 </div>
                 <div class="modal-body">
-                    <form class="form" action="/sellTokens" method="POST">
+                    <form class="form" action="/">
                         <label>Sell Tokens: </label>
-                        <input id="sellT" name="sellT" type="number" max=<%=balance%> min=1>
-                        <input class="btn btn-info btn-lg" id="btn-upload" type="submit" value="Confirm" />
+                        <input id="sellT" name="sellT" type="number" min=1>
+                        <input class="btn btn-info btn-lg" id="btn-sell" type="button" value="Confirm" />
                     </form>
                 </div>
             </div>
@@ -280,20 +272,11 @@
     </div>
 
 
-    <div class="modal fade" id="review-contents" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Reviewed Details</h5>
-                </div>
-                <div class="modal-body">
+    <div class="collapse" id="review-contents1">
                     <ul style="list-style-type: none;">
-                        <li><strong>Marks : </strong><span id="marks"></span></li>
-                        <li><strong>Comments : </strong><span id="comments"></span></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+                        <li><strong>Marks : </strong><span id="marks1"></span></li>
+                        <li><strong>Comments : </strong><span id="comments1"></span></li>
+                    </ul>             
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
@@ -307,6 +290,19 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
+            var host = window.location.hostname;
+            $('.alpha').each(function() {
+                // alert(host+"/ipfs/"+$(this).html());
+                alert($(this).html());
+                $(this).html('<a target="_blank" class="hash" href="http://'+host+':8080/ipfs/'+$(this).html()+'">'+$(this).html()+'</a>');
+            });
+            // for(var i=0;i<val.length;i++){
+            //     var url = host+"/ipfs/"+val[i];
+            //     alert(url);
+            //     $('.hash').attr("href", url);
+            // }
+           
+        
             $('#new-domain').val('All');
             $('#domain').val('All');
 
@@ -341,15 +337,75 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
+           // e.preventDefault();
+
+            $('#btn-sell').click(function() {
+                var x = $('#sellT').val();
+                var bal = parseInt($('#balance').text());
+                if(x>bal){
+                    swal("Cancelled", "You cannot sell amount higher than balance", "error");
+                }
+                else{
+                    swal({
+                            title: "Are you sure?",
+                            text: "You will not be taken aback!",
+                            icon: "warning",
+                            buttons: [
+                            'No, cancel it!',
+                            'Yes, I am sure!'
+                            ],
+                            dangerMode: true,
+                        }).then(function(isConfirm) {
+                        if (isConfirm) {
+                            swal({
+                                title: 'Confirmation',
+                                text: 'Tokens are successfully debited! wait till we redirect you...Do not press anything!',
+                                icon: 'success'
+                            }).then(function() {
+                               $.post('/sellTokens', {
+                                    data: x
+                                }, function(response) {
+                                    window.location.reload();
+                                });
+                            });
+                        }
+                        else{
+                            swal("Cancelled", "You can come back again:)", "error");
+                        }
+                    }); 
+                }               
+            });
 
             $('#btn-buy').click(function() {
                 var x = $('#buyT').val();
-                alert(x);
-                $.post('/buyTokens', {
-                    data: x
-                }, function(response) {
-                    window.location.reload();
-                });
+                
+                swal({
+                        title: "Are you sure?",
+                        text: "You will not be taken aback!",
+                        icon: "warning",
+                        buttons: [
+                        'No, cancel it!',
+                        'Yes, I am sure!'
+                        ],
+                        dangerMode: true,
+                    }).then(function(isConfirm) {
+                    if (isConfirm) {
+                        swal({
+                            title: 'Confirmation',
+                            text: 'Tokens are successfully credited! wait till we redirect you...Do not press anything!',
+                            icon: 'success'
+                        }).then(function() {
+                           $.post('/buyTokens', {
+                                data: x
+                            }, function(response) {
+                                window.location.reload();
+                            });
+                        });
+                    }
+                    else{
+                        swal("Cancelled", "You can come back again:)", "error");
+                    }
+                });                
             });
         });
     </script>
