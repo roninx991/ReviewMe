@@ -171,7 +171,7 @@ var p_router = function() {
                                 sub2: ans1,
                                 balance: bal
                             });
-                        }, 5000);
+                        }, 3000);
 
                     });
                 });

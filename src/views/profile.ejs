@@ -175,40 +175,39 @@
                 </div>
             </div>
         </div>
-
-        <div class="modal fade" id="buyToken" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Buy SATs</h5>
-                    </div>
-                    <div class="modal-body">
-                        <form class="form" action="">
-                            <label>Buy Tokens: </label>
-                            <input id="buyT" name="buyT" type="number" max=100 min=1>
-                            <input class="btn btn-info btn-lg" id="btn-buy" type="button" value="Confirm" />
-                        </form>
-                    </div>
+<div class="modal fade" id="buyToken" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Buy SATs</h5>
+                </div>
+                <div class="modal-body">
+                    <form class="form" action="/">
+                        <label>Buy Tokens: </label>
+                        <input id="buyT" name="buyT" type="number" max=100 min=1>
+                        <input class="btn btn-info btn-lg" id="btn-buy" type="button" value="Confirm" />
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="modal fade" id="sellToken" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Sell SATs</h5>
-                    </div>
-                    <div class="modal-body">
-                        <form class="form" action="/sellTokens" method="POST">
-                            <label>Sell Tokens: </label>
-                            <input id="sellT" name="sellT" type="number" max=<%=balance%> min=1>
-                            <input class="btn btn-info btn-lg" id="btn-sell" type="submit" value="Confirm" />
-                        </form>
-                    </div>
+    <div class="modal fade" id="sellToken" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Sell SATs</h5>
+                </div>
+                <div class="modal-body">
+                    <form class="form" action="/">
+                        <label>Sell Tokens: </label>
+                        <input id="sellT" name="sellT" type="number" min=1>
+                        <input class="btn btn-info btn-lg" id="btn-sell" type="button" value="Confirm" />
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
@@ -225,18 +224,84 @@
         </script>
 
         <script type="text/javascript">
-            $(document).ready(function() {
-                $('#btn-buy').click(function() {
-                    var x = $('#buyT').val();
-                    alert(x);
-                    $.post('/buyTokens', {
-                        data: x
-                    }, function(response) {
-                        window.location.reload();
-                    });
+        $(document).ready(function() {
+
+           // e.preventDefault();
+            $('btn-upload').click(function(){
+                swal({title:"Success",text:"File Uploaded Successfully",icon:"success"}).then(function(){
+                    window.location.reload();
                 });
             });
-        </script>
+            $('#btn-sell').click(function() {
+                var x = $('#sellT').val();
+                var bal = parseInt($('#balance').text());
+                if(x>bal){
+                    swal("Cancelled", "You cannot sell amount higher than balance", "error");
+                }
+                else{
+                    swal({
+                            title: "Are you sure?",
+                            text: "You will not be taken aback!",
+                            icon: "warning",
+                            buttons: [
+                            'No, cancel it!',
+                            'Yes, I am sure!'
+                            ],
+                            dangerMode: true,
+                        }).then(function(isConfirm) {
+                        if (isConfirm) {
+                            swal({
+                                title: 'Confirmation',
+                                text: 'Tokens are successfully debited! wait till we redirect you...Do not press anything!',
+                                icon: 'success'
+                            }).then(function() {
+                               $.post('/sellTokens', {
+                                    data: x
+                                }, function(response) {
+                                    window.location.reload();
+                                });
+                            });
+                        }
+                        else{
+                            swal("Cancelled", "You can come back again:)", "error");
+                        }
+                    }); 
+                }               
+            });
+
+            $('#btn-buy').click(function() {
+                var x = $('#buyT').val();
+                
+                swal({
+                        title: "Are you sure?",
+                        text: "You will not be taken aback!",
+                        icon: "warning",
+                        buttons: [
+                        'No, cancel it!',
+                        'Yes, I am sure!'
+                        ],
+                        dangerMode: true,
+                    }).then(function(isConfirm) {
+                    if (isConfirm) {
+                        swal({
+                            title: 'Confirmation',
+                            text: 'Tokens are successfully credited! wait till we redirect you...Do not press anything!',
+                            icon: 'success'
+                        }).then(function() {
+                           $.post('/buyTokens', {
+                                data: x
+                            }, function(response) {
+                                window.location.reload();
+                            });
+                        });
+                    }
+                    else{
+                        swal("Cancelled", "You can come back again:)", "error");
+                    }
+                });                
+            });
+        });
+    </script>
 </body>
 
 </html>

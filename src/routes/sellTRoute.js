@@ -20,7 +20,7 @@ var st_router = function(web3) {
                 SATContract.deployed().then(function(instance) {
                     console.log(web3.eth.accounts[0], req.body.sellT, req.user.address);
                     var x = web3.personal.unlockAccount(req.user.address, req.user.pwd);
-                    return instance.transfer(web3.eth.accounts[0], req.body.sellT, { from: req.user.address, gas: 200000 });
+                    return instance.transfer(web3.eth.accounts[0], req.body.data, { from: req.user.address, gas: 200000 });
 
                 }).then(function(result) {
                     if (req.user.type == 0) {
