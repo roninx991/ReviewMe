@@ -72,7 +72,7 @@ app.get('/', function(req, res) {
     } else {
         res.render('index', {
             title: "SmartReviewer",
-            heading: "The next generation conference paper reviewing system",
+            heading: "The next generation decntralised conference papers and journal reviewing system",
             navMenu: menu
         });
     }
