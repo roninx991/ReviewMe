@@ -41,6 +41,7 @@ var p_router = function(web3) {
                 mongodb.connect(url, { useNewUrlParser: true }, function(err, client) {
                     const db = client.db('NodeDemoWebApp');
                     const Submissions = db.collection('Submissions');
+                    const Reviews = db.collection('Reviews');
 
                     Submissions.find({ owner: req.user._id }).toArray(function(err, x) {
                         if (err) {
@@ -79,11 +80,16 @@ var p_router = function(web3) {
                                                             if (stat == 1)
                                                                 s.status = "Pending...";
                                                             else if (stat == 2)
-                                                                s.status = "Accepted...";
+                                                                s.status = "Accepted";
                                                             else
                                                                 s.status = "Rejected";
                                                             s.h = hash;
-                                                            ans.push(s);
+                                                            Reviews.find({ "hash": hash }).toArray(function(err, acceptreject) {
+                                                                if (err == undefined) {
+                                                                    s.reviews = acceptreject;
+                                                                    ans.push(s);
+                                                                }
+                                                            });;
                                                         });
                                                     }
                                                 });

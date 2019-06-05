@@ -48,7 +48,7 @@ var u_router = function(web3) {
                             });
 
                             MainContract.deployed().then(function(instance) {
-                                web3.personal.unlockAccount(web3.eth.accounts[0], "Rohit@1997");
+                                web3.personal.unlockAccount(web3.eth.accounts[0], "123456");
                                 instance.Review(req.body.hashvalue, req.user.address.toLowerCase(), { from: web3.eth.accounts[0], gas: 100000 }).then(function(result) {
                                     instance.giveMarks(req.body.hashvalue, req.body.marks, { from: web3.eth.accounts[0], gas: 100000 }).then(function(M) {
                                         instance.isReviewed.call(req.body.hashvalue).then(function(result1) {
@@ -87,7 +87,7 @@ var u_router = function(web3) {
 
                                                         SATContract.deployed().then(function(instance) {
                                                             //console.log(req.user.address, req.user.pwd);
-                                                            web3.personal.unlockAccount(web3.eth.accounts[0], "Rohit@1997");
+                                                            web3.personal.unlockAccount(web3.eth.accounts[0], "123456");
 
                                                             instance.transfer(result2[0].toLowerCase(), 10 + Math.max(-9, parseInt((3 - Math.floor(Math.abs(result3[0] - mean))) * 10.0 / 3.0)), { from: web3.eth.accounts[0], gas: 100000 });
                                                             instance.transfer(result2[1].toLowerCase(), 10 + Math.max(-9, parseInt((3 - Math.floor(Math.abs(result3[1] - mean))) * 10.0 / 3.0)), { from: web3.eth.accounts[0], gas: 100000 });

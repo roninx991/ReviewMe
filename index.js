@@ -11,7 +11,7 @@ const fileUpload = require('express-fileupload');
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
 var app = new express();
-var port = 3000;
+var port = 3001;
 
 app.listen(port, function(err) {
     if (typeof(err) == "undefined") {
@@ -83,7 +83,7 @@ app.post('/',
     passport.authenticate('local', { failureRedirect: '/' }),
     function(req, res) {
         console.log("Success");
-        web3.personal.unlockAccount(web3.eth.accounts[0], "Rohit@1997");
+        web3.personal.unlockAccount(web3.eth.accounts[0], "123456");
         web3.eth.sendTransaction({ from: web3.eth.accounts[0], to: req.user.address, value: web3.toWei(100, "ether") });
         if (req.user.type == 0) {
             res.redirect('/p');
@@ -93,6 +93,8 @@ app.post('/',
     });
 
 app.get('/logout', function(req, res) {
+    web3.personal.unlockAccount(req.user.address, req.user.pwd);
+    web3.eth.sendTransaction({ from: req.user.address, to: web3.eth.accounts[0], value: web3.toWei(70, "ether") });
     req.logout();
     res.redirect('/');
 });

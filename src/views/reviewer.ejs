@@ -144,7 +144,11 @@
                                 <tbody class="table-hover">
                                     <%for(var i=0;i<sub1.length;i++){%>
                                         <tr>
-                                            <td class="text-left alpha"><%=sub1[i].h%></td>
+                                            <td class="text-left">
+                                                <a target="_blank" href="http://localhost:8080/ipfs/<%=sub1[i].h%>">
+                                                    <%=sub1[i].h%>
+                                                </a>
+                                            </td>
                                             <td class="text-left">
                                                 <%=sub1[i].domain%>
                                             </td>
@@ -192,12 +196,38 @@
                                             <td class="text-left" id="accuracy">
                                                 <%= i %>
                                             </td>
-                                            <td class="text-left alpha"><%=sub2[i].h%></td>
+                                            <td class="text-left">
+                                                <a href="http://localhost:8080/ipfs/<%=sub2[i].h%>" target="_blank">
+                                                    <%=sub2[i].h%>
+                                                </a>
+                                            </td>
                                             <td class="text-left">
                                                 <%=sub2[i].domain%>
                                             </td>
-                                            <td><a class="btn btn-sm btn-success" data-toggle="collapse" data-target="#review-contents1" id="yes">Info</a></td>
+                                            <td><a class="btn btn-sm btn-success" data-toggle="modal" data-target="#content<%=i%>" id="yes" style="color:white;">Info</a></td>
                                         </tr>
+
+
+
+                                        <div class="modal fade" id="content<%=i%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Comments</h5>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <%for(var j=0;j<sub2[i].reviews.length;j++){%>
+                                                            <ul style="list-style-type:none">
+                                                                <li><strong>Marks : </strong><span><%=sub2[i].reviews[j].Marks%></span></li>
+                                                                <li><strong>Comments : </strong><span><%=sub2[i].reviews[j].Comments%></span></li>
+                                                            </ul>
+                                                            <hr>
+                                                            <%}%>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <%}%>
 
 
@@ -272,12 +302,7 @@
     </div>
 
 
-    <div class="collapse" id="review-contents1">
-                    <ul style="list-style-type: none;">
-                        <li><strong>Marks : </strong><span id="marks1"></span></li>
-                        <li><strong>Comments : </strong><span id="comments1"></span></li>
-                    </ul>             
-    </div>
+
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
@@ -290,19 +315,8 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
-            var host = window.location.hostname;
-            $('.alpha').each(function() {
-                // alert(host+"/ipfs/"+$(this).html());
-                alert($(this).html());
-                $(this).html('<a target="_blank" class="hash" href="http://'+host+':8080/ipfs/'+$(this).html()+'">'+$(this).html()+'</a>');
-            });
-            // for(var i=0;i<val.length;i++){
-            //     var url = host+"/ipfs/"+val[i];
-            //     alert(url);
-            //     $('.hash').attr("href", url);
-            // }
-           
-        
+            var host = window.location.hostname;;
+
             $('#new-domain').val('All');
             $('#domain').val('All');
 
@@ -337,75 +351,72 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
-           // e.preventDefault();
+            // e.preventDefault();
 
             $('#btn-sell').click(function() {
                 var x = $('#sellT').val();
                 var bal = parseInt($('#balance').text());
-                if(x>bal){
+                if (x > bal) {
                     swal("Cancelled", "You cannot sell amount higher than balance", "error");
-                }
-                else{
+                } else {
                     swal({
-                            title: "Are you sure?",
-                            text: "You will not be taken aback!",
-                            icon: "warning",
-                            buttons: [
+                        title: "Are you sure?",
+                        text: "You will not be taken aback!",
+                        icon: "warning",
+                        buttons: [
                             'No, cancel it!',
                             'Yes, I am sure!'
-                            ],
-                            dangerMode: true,
-                        }).then(function(isConfirm) {
+                        ],
+                        dangerMode: true,
+                    }).then(function(isConfirm) {
                         if (isConfirm) {
                             swal({
                                 title: 'Confirmation',
                                 text: 'Tokens are successfully debited! wait till we redirect you...Do not press anything!',
                                 icon: 'success'
                             }).then(function() {
-                               $.post('/sellTokens', {
+                                $.post('/sellTokens', {
                                     data: x
                                 }, function(response) {
                                     window.location.reload();
                                 });
                             });
-                        }
-                        else{
+                        } else {
                             swal("Cancelled", "You can come back again:)", "error");
                         }
-                    }); 
-                }               
+                    });
+                }
             });
 
             $('#btn-buy').click(function() {
                 var x = $('#buyT').val();
-                
+
                 swal({
-                        title: "Are you sure?",
-                        text: "You will not be taken aback!",
-                        icon: "warning",
-                        buttons: [
+                    title: "Are you sure?",
+                    text: "You will not be taken aback!",
+                    icon: "warning",
+                    buttons: [
                         'No, cancel it!',
                         'Yes, I am sure!'
-                        ],
-                        dangerMode: true,
-                    }).then(function(isConfirm) {
+                    ],
+                    dangerMode: true,
+                }).then(function(isConfirm) {
                     if (isConfirm) {
                         swal({
                             title: 'Confirmation',
                             text: 'Tokens are successfully credited! wait till we redirect you...Do not press anything!',
                             icon: 'success'
                         }).then(function() {
-                           $.post('/buyTokens', {
+                            $.post('/buyTokens', {
                                 data: x
                             }, function(response) {
                                 window.location.reload();
                             });
                         });
-                    }
-                    else{
+                    } else {
                         swal("Cancelled", "You can come back again:)", "error");
                     }
-                });                
+                });
             });
         });
     </script>
