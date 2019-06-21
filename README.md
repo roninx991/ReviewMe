@@ -1,6 +1,15 @@
 # ReviewMe
 Blockchain based peer review system for conference papers
 
+
+Please find the attached drive link for whitepaper:
+https://drive.google.com/open?id=1-LnCRTdZU4SVKqHxqUnLBY4iudbLr5R2
+
+Please find the attached drive link for video implementation:
+https://drive.google.com/file/d/1sWrqPv3-q9Ej510LrAs3AkCGvJYDRvaV/view?usp=sharing
+
+
+
 # Creating a Private Single Geth Node
 1. Create folder for chain data:
 
