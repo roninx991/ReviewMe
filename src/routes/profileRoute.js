@@ -33,7 +33,7 @@ var menu = [{
 var p_router = function(web3) {
     profileRouter.route("/")
         .all(function(req, res, next) {
-            if (!req.user && req.user.type != "0") {
+            if (!req.user) {
                 res.redirect('/');
             } else {
 
@@ -72,7 +72,7 @@ var p_router = function(web3) {
                                             contractInstance.displayHash(i).then(function(h) {
                                                 var hash = h;
                                                 console.log("Submission Hash: ", hash);
-                                                contractInstance.isOwner(req.user.address, hash).then(function(answer) {
+                                                contractInstance.isAuthor(req.user.address, hash).then(function(answer) {
                                                     console.log("Submission Owner: ", answer);
                                                     if (answer) {
                                                         contractInstance.displaySubmissionStatus(hash).then(function(stat) {

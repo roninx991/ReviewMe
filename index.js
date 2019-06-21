@@ -51,6 +51,7 @@ var uploadRouter = require('./src/routes/uploadRoute')(web3);
 var yesnoRouter = require('./src/routes/yesnoRoute')(web3);
 var buyTRouter = require('./src/routes/buyTRoute')(web3);
 var sellTRouter = require('./src/routes/sellTRoute')(web3);
+var becomeReviewerRouter = require('./src/routes/becomeReviewerRoute')();
 
 
 app.use('/register', registerRouter);
@@ -61,6 +62,7 @@ app.use('/review', yesnoRouter);
 app.use('/upload', uploadRouter);
 app.use('/buyTokens', buyTRouter);
 app.use('/sellTokens', sellTRouter);
+app.use('/becomeReviewer', becomeReviewerRouter);
 
 
 app.set('views', './src/views');

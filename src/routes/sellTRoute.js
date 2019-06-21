@@ -18,7 +18,7 @@ var st_router = function(web3) {
                 res.redirect('/');
             } else {
                 SATContract.deployed().then(function(instance) {
-                    console.log(web3.eth.accounts[0], req.body.sellT, req.user.address);
+                    console.log("Tokens transferred to: " + web3.eth.accounts[0] + "\nAmount: " + req.body.data + "\nFrom account: " + req.user.address);
                     var x = web3.personal.unlockAccount(req.user.address, req.user.pwd);
                     return instance.transfer(web3.eth.accounts[0], req.body.data, { from: req.user.address, gas: 200000 });
 

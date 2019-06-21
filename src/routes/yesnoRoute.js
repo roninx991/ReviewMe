@@ -68,7 +68,7 @@ var u_router = function(web3) {
                                                         instance.setRating(mean, req.body.hashvalue, { from: web3.eth.accounts[0], gas: 100000 }).then(function(R) {
                                                             console.log("Rating of ", req.body.hashvalue, "is ", mean);
                                                             instance.setCost(req.body.hashvalue, { from: web3.eth.accounts[0], gas: 100000 }).then(function(C) {
-                                                                console.log("Cost of ", req.body.hashvalue, "is ", 100 * mean);
+                                                                console.log("Cost of ", req.body.hashvalue, "is ", 50 + mean*5);
 
                                                                 var status = mean > 5 ? 2 : 3;
                                                                 instance.setStatus(req.body.hashvalue, status, { from: web3.eth.accounts[0], gas: 100000 }).then(function(C) {

@@ -5,6 +5,7 @@ contract MainContract {
 	// Document storage struct
 	struct Submission {
         address index;
+        address owner;
         uint status;
         address[] reviewers;
         uint[] marks;
@@ -16,6 +17,7 @@ contract MainContract {
     mapping(string => Submission) private submissions;
     string[] public hashes;
 
+    mapping(address => uint) private credibility;
 
     // Function to check if a document is already present
     function isPresent(string memory docHash) public view returns(bool)
@@ -29,19 +31,41 @@ contract MainContract {
         // require(!isPresent(docHash), "Document already present");
         hashes.push(docHash);
         submissions[docHash].index = userAddress;
+        submissions[docHash].owner = userAddress;
+        submissions[docHash].cost = 0;
         submissions[docHash].status = 1;
+        submissions[docHash].rating = 0;
     }
 
-
-    // Function to check if given address is owner of document
-    function isOwner(address userAddress, string memory h) public view returns(bool)
+    function isAuthor(address userAddress, string memory h) public view returns(bool)
     {
         if (submissions[h].index == userAddress) 
         {
             return true;
         }
         return false;
-    }  
+    }
+
+
+    // Function to check if given address is owner of document
+    function isOwner(address userAddress, string memory h) public view returns(bool)
+    {
+        if (submissions[h].owner == userAddress) 
+        {
+            return true;
+        }
+        return false;
+    }
+
+    function getAuthor(string memory h) public view returns(address) {
+        return submissions[h].index;
+    }
+
+    function changeOwnership(address org, string memory h) public
+    {
+        require(submissions[h].owner != org);
+        submissions[h].owner = org;
+    }
 
     // Function to return hash value of document
     function displayHash(uint num) public view returns(string memory)
@@ -80,7 +104,16 @@ contract MainContract {
         submissions[docHash].marks.push(m);
     }
 
-    
+    function getCredibility(address reviewer) public view returns(uint) 
+    {
+        return credibility[reviewer];
+    }
+
+    function setCredibility(address reviewer, uint c) public
+    {
+        credibility[reviewer] = c;
+    }
+
     // Function to check if a reviewer has already voted for a document
     function hasReviewed(string memory docHash, address addr) public view returns(bool)
     {
@@ -108,13 +141,13 @@ contract MainContract {
 
     function setRating(uint r, string memory docHash) public 
     {
-        require(r > 0 && r <= 10, "Invalid Rating");
+        require(r >= 0 && r <= 10, "Invalid Rating");
         submissions[docHash].rating = r;
     }
 
     function getRating(string memory docHash) public view returns(uint)
     {
-        require(isPresent(docHash), "Document hash is invalid");
+        // require(isPresent(docHash), "Document hash is invalid");
         return submissions[docHash].rating;
     }
 
@@ -127,8 +160,8 @@ contract MainContract {
 
     function getCost(string memory docHash) public view returns(uint)
     {
-        require(isPresent(docHash), "Document hash is invalid");
-        require(submissions[docHash].cost >= 0, "Cost invalid");
+        // require(isPresent(docHash), "Document hash is invalid");
+        // require(submissions[docHash].cost >= 0, "Cost invalid");
         return submissions[docHash].cost;
     }
 

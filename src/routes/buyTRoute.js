@@ -18,11 +18,12 @@ var bt_router = function(web3) {
                 res.redirect('/');
             } else {
                 SATContract.deployed().then(function(instance) {
-                    console.log(web3.eth.accounts[0], req.body.buyT, req.user.address);
+                    console.log("Tokens transferred from: " + web3.eth.accounts[0] + "\nAmount: " + req.body.data + "\nTo account: " + req.user.address);
                     var x = web3.personal.unlockAccount(web3.eth.accounts[0], "123456");
                     return instance.transfer(req.user.address, req.body.data, { from: web3.eth.accounts[0], gas: 100000 });
 
                 }).then(function(result) {
+                    console.log('Tokens successfully bought!');
                     if (req.user.type == 0) {
                         res.redirect('/p');
                     } else {
