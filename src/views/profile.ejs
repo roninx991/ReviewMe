@@ -13,9 +13,11 @@
     <script src="https://npmcdn.com/ipfs-api/dist/index.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" href="img/SARA.png">
+    
 </head>
 
-<body>
+<body style="background: white;">
     <nav class="navbar navbar-expand-lg navbar-dark bg-info">
         <a class="navbar-brand" href="/">
             <%=title%>
@@ -164,7 +166,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 var balance = parseInt($('#balance').html());
-                if (balance < 100) {
+                if (balance < 50) {
                     $('button').prop('disabled', true);
                     swal("Low Balance!", "Please buy tokens", "error");
                 }

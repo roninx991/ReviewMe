@@ -48,6 +48,17 @@ var p_router = function() {
                     console.log(error);
                 });
 
+                MainContract.deployed().then(function(instance) {
+                    return instance.getCredibility.call(req.user.address);
+
+                }).then(function(result) {
+                    console.log("Credibility is: ", result.toString());
+                    cred = result.toString();
+
+                }).catch(function(error) {
+                    console.log(error);
+                });
+
                 var count = 0;
                 var ans = new Array();
                 var ans1 = new Array();
@@ -169,7 +180,8 @@ var p_router = function() {
                                 user: req.user,
                                 sub1: ans,
                                 sub2: ans1,
-                                balance: bal
+                                balance: bal,
+                                credibility: cred
                             });
                         }, 3000);
 
